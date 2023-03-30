@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 
 def hill_climbing(max_it, max_same):
     x = random()
-    print('first:', x)
     value = evaluate(x)
     t = 1
     same = 1
@@ -58,8 +57,6 @@ def main():
     # x_list, v_list = test_calc()
     # plt.plot(x_list, v_list)
     # plt.show()
-
-
 
 
 if __name__ == '__main__':
