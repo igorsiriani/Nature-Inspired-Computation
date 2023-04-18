@@ -107,12 +107,13 @@ def genetic_algorithm(population_size, individual_size, generations, k, crossove
 
 
 def main():
-    population_size = 100
-    individual_size = 32
-    generations = 100
-    k = 10
-    crossover_rate = 0.8
-    mutation_rate = 0.01
+    # Definir os parâmetros do algoritmo genético
+    population_size = 100  # tamanho da população
+    individual_size = 32  # número de bits usados para representar cada variável
+    generations = 1000  # número de gerações
+    k = 10  # tamanho mantida na próxima geração
+    crossover_rate = 0.8  # taxa de crossover
+    mutation_rate = 0.05  # taxa de mutação
 
     genetic_algorithm(population_size, individual_size, generations, k, crossover_rate, mutation_rate)
 
