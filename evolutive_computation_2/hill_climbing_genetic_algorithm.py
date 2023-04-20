@@ -1,11 +1,13 @@
 import math
 import random
+import matplotlib.pyplot as plt
+import numpy
 
 
 # função de avaliação
 def evaluate(individual):
     # converte a string de bits para um valor inteiro
-    x = fx = int(individual, 2) / (2**len(individual)-1)
+    x = int(individual, 2) / (2**len(individual)-1)
     # calcula o valor da função f(x)
     return 2 ** (-2 * ((x - 0.1) / 0.9) ** 2) * (math.sin(5 * math.pi * x)) ** 6
 
@@ -60,6 +62,9 @@ def genetic_algorithm(population_size, individual_size, generations, k, crossove
     best_solution = None
     best_fitness = float('-inf')
 
+    best_list = []
+    stagnation = 0
+
     # executa as gerações
     for generation in range(generations):
         # avalia o fitness da população atual
@@ -68,14 +73,18 @@ def genetic_algorithm(population_size, individual_size, generations, k, crossove
         # encontra o melhor indivíduo da população atual
         current_best = max(population, key=evaluate)
         current_best_fitness = evaluate(current_best)
+        best_list.append(evaluate(current_best))
 
         # atualiza a melhor solução encontrada
         if current_best_fitness > best_fitness:
             best_solution = current_best
             best_fitness = current_best_fitness
-
-        # imprime o progresso do algoritmo
-        print(f'Generation {generation}: best fitness = {best_fitness}')
+            stagnation = 0
+        else:
+            stagnation += 1
+            if stagnation > 400:
+                best_solution_int = int(best_solution, 2) / (2**len(best_solution)-1)
+                return generation - stagnation, round(best_solution_int, 2)
 
         # seleciona os indivíduos para reprodução
         parents = [tournament_selection(population, k) for _ in range(population_size)]
@@ -100,10 +109,11 @@ def genetic_algorithm(population_size, individual_size, generations, k, crossove
         population = offspring
 
     # converte a string de bits da melhor solução para um valor inteiro
-    best_solution_int = float(best_solution)
-
-    # imprime a melhor solução encontrada
+    best_solution_int = int(best_solution, 2) / (2**len(best_solution)-1)
     print(f'Best solution: x = {best_solution_int}, f(x) = {best_fitness}')
+
+    # retorna a geração da melhor solução encontrada
+    return generation - stagnation, round(best_solution_int, 2)
 
 
 def main():
@@ -112,10 +122,31 @@ def main():
     individual_size = 32  # número de bits usados para representar cada variável
     generations = 1000  # número de gerações
     k = 10  # tamanho mantida na próxima geração
-    crossover_rate = 0.8  # taxa de crossover
-    mutation_rate = 0.05  # taxa de mutação
+    crossover_rate = 0.5  # taxa de crossover
+    mutation_rate = 0.1  # taxa de mutação
 
-    genetic_algorithm(population_size, individual_size, generations, k, crossover_rate, mutation_rate)
+    generation_list = []
+    best_solution_list = []
+
+    for i in range(0, 200):
+        generation, best_solution_int = genetic_algorithm(population_size, individual_size, generations, k, crossover_rate, mutation_rate)
+
+        generation_list.append(generation)
+        best_solution_list.append(best_solution_int)
+
+    print('Geração máxima: ', max(generation_list))
+    print('Geração mínima: ', min(generation_list))
+    print('Geração média: ', numpy.mean(generation_list))
+    print('Desvio padrão: ', numpy.std(generation_list))
+
+    print('Solução máxima: ', max(best_solution_list))
+    print('Solução mínima: ', min(best_solution_list))
+    print('Solução média: ', numpy.mean(best_solution_list))
+    print('Solução padrão: ', numpy.std(best_solution_list))
+
+    plt.plot(generation_list)
+    plt.ylabel('Geração')
+    plt.show()
 
 
 if __name__ == '__main__':
