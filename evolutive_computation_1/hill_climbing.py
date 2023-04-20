@@ -1,4 +1,7 @@
 from random import random
+
+import numpy
+
 from utils import disturb, evaluate
 
 
@@ -23,8 +26,16 @@ def hill_climbing(max_it, max_same):
 
 
 def main():
-    result = hill_climbing(10e10, 10e5)
-    print('result:', result)
+    result_list = []
+
+    for i in range(0, 200):
+        result = hill_climbing(10e5, 400)
+        result_list.append(result)
+
+    print('Solução máxima: ', max(result_list))
+    print('Solução mínima: ', min(result_list))
+    print('Solução média: ', numpy.mean(result_list))
+    print('Solução padrão: ', numpy.std(result_list))
 
 
 if __name__ == '__main__':

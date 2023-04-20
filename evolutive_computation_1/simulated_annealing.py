@@ -1,13 +1,16 @@
 from random import random
+
+import numpy
 import numpy as np
 from utils import disturb, evaluate
 
 
-def simulated_annealing(max_it, temperature, k_max):
+def simulated_annealing(max_it, temperature, k_max, max_same):
     x = 0
     x_best = x
     t = 1
     temp = temperature
+    same = 0
 
     while t < max_it:
         x = random()
@@ -17,6 +20,11 @@ def simulated_annealing(max_it, temperature, k_max):
 
         if evaluate(x_best) < value_:
             x_best = x_
+            same = 0
+        else:
+            same += 1
+            if same > max_same:
+                return x_best
 
         if temp < 0.0001:
             temp = temperature
@@ -36,21 +44,28 @@ def looping(x, value, k_max, temp):
         prob = np.exp((value_ - value) / temp)
         rand = random()
 
-        if value < value_:
+        if value > value_:
             x = x_
             value = value_
         elif rand < prob:
             x = x_
             value = value_
-        print('x: ', x, ' - value: ', value)
         k += 1
 
     return x
 
 
 def main():
-    result = simulated_annealing(10e2, 10, 10e3)
-    print('result:', result)
+    result_list = []
+
+    for i in range(0, 200):
+        result = simulated_annealing(10e3, 10, 10e2, 400)
+        result_list.append(result)
+
+    print('Solução máxima: ', max(result_list))
+    print('Solução mínima: ', min(result_list))
+    print('Solução média: ', numpy.mean(result_list))
+    print('Solução padrão: ', numpy.std(result_list))
 
 
 if __name__ == '__main__':

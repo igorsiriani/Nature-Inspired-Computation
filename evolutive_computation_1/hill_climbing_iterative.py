@@ -1,11 +1,13 @@
 from random import random
+
+import numpy
+
 from hill_climbing import hill_climbing, evaluate
 
 
 def iterative_hill(n_start, max_it, max_same):
     t = 0
     x = random()
-    print('initial:', x)
     value = evaluate(x)
 
     while t < n_start:
@@ -19,8 +21,16 @@ def iterative_hill(n_start, max_it, max_same):
 
 
 def main():
-    result = iterative_hill(10e3, 10e3, 10e2)
-    print('result:', result)
+    result_list = []
+
+    for i in range(0, 200):
+        result = iterative_hill(10e2, 10e3, 400)
+        result_list.append(result)
+
+    print('Solução máxima: ', max(result_list))
+    print('Solução mínima: ', min(result_list))
+    print('Solução média: ', numpy.mean(result_list))
+    print('Solução padrão: ', numpy.std(result_list))
 
 
 if __name__ == '__main__':

@@ -1,4 +1,6 @@
 from random import random
+
+import numpy
 import numpy as np
 from utils import disturb, evaluate
 
@@ -17,9 +19,6 @@ def stochastic_hill_climbing(max_it, max_same, t_prob):
         prob = (1 / (1 + np.exp((value - value_) / t_prob)))
         rand = random()
 
-        print('Prob:', prob, ' - rand:', rand)
-        print('value:', value, ' - value_:', value_)
-
         if rand < prob:
             x = x_
             value = value_
@@ -32,8 +31,16 @@ def stochastic_hill_climbing(max_it, max_same, t_prob):
 
 
 def main():
-    result = stochastic_hill_climbing(10e5, 10e3, 0.0001)
-    print('result:', result)
+    result_list = []
+
+    for i in range(0, 200):
+        result = stochastic_hill_climbing(10e5, 400, 0.0001)
+        result_list.append(result)
+
+    print('Solução máxima: ', max(result_list))
+    print('Solução mínima: ', min(result_list))
+    print('Solução média: ', numpy.mean(result_list))
+    print('Solução padrão: ', numpy.std(result_list))
 
 
 if __name__ == '__main__':
